@@ -1,46 +1,77 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-var app = {
-    // Application Constructor
-    initialize: function() {
-        document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
-    },
+// document.addEventListener("deviceready", onDeviceReady, false);
 
-    // deviceready Event Handler
-    //
-    // Bind any cordova events here. Common events are:
-    // 'pause', 'resume', etc.
-    onDeviceReady: function() {
-        this.receivedEvent('deviceready');
-    },
+// function onDeviceReady() {
+  var player = undefined;
+  var mode = undefined;
+  $(document).ready(function(){
+    const dbRef = firebase.database().ref();
+    // console.log(dbRef.child('bases'));
+    dbRef.on('value', snap=>{
+      let val = snap.val();
+      if(mode == undefined) mode = val.mode;
+      if(val.mode == 'start'){
+        if(val.players.red) $('#red').find('.taken').fadeIn(100);
+        else $('#red').find('.taken').fadeOut(100);
+        if(val.players.blue) $('#blue').find('.taken').fadeIn(100);
+        else $('#blue').find('.taken').fadeOut(100);
+        if(val.players.green) $('#green').find('.taken').fadeIn(100);
+        else $('#green').find('.taken').fadeOut(100);
+        if(val.players.yellow) $('#yellow').find('.taken').fadeIn(100);
+        else $('#yellow').find('.taken').fadeOut(100);
+        // console.log(Object.keys(val.players).length);
+        console.log(Object.values(val.players));
+        var playerValues = Object.values(val.players);
+        var presentPlayers = 0;
+        playerValues.forEach(function(isPresent){
+          if(isPresent) presentPlayers++;
+        });
+        if(presentPlayers > 1 && player){
+          $('#startBtn').fadeIn(200);
+        }
+      }
+      else{
+        if(mode == 'start') {
+          mode = 'game';
+          $('#startScreen').fadeOut(300, function(){
+            $('#gameScreen').fadeIn(300, initGame);
+          });
+        }
+      }
+    });
 
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
+    $('.color').click(function(){
+      if(player) return;
+      var color = $(this).closest('.color').attr('id');
+      player = new Player(color);
+      $(this).find('.taken').html('You');
+      dbRef.child('players/'+color).set(true);
+    });
 
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
+    $('#resetBtn').click(function(){
+      player = undefined;
+      dbRef.child('players/red').set(false);
+      dbRef.child('players/blue').set(false);
+      dbRef.child('players/green').set(false);
+      dbRef.child('players/yellow').set(false);
+      dbRef.child('mode').set('start');
+      dbRef.child('bases/1').set('white');
+      dbRef.child('bases/2').set('white');
+      dbRef.child('bases/3').set('white');
+      dbRef.child('bases/4').set('white');
+      console.log('reseted');
+    });
 
-        console.log('Received Event: ' + id);
-    }
-};
+    $('#startBtn').click(function(){
+      dbRef.child('mode').set('game');
 
-app.initialize();
+    });
+  });
+
+  function initGame(){
+    console.log('inited');
+  }
+
+  function Player(color){
+    this.color = color;
+  }
+// }
