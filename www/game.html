@@ -4,9 +4,31 @@
     <meta charset="utf-8">
     <title>Game</title>
     <link rel="stylesheet" href="css/master.css">
+    <link rel="stylesheet" href="css/game.css">
   </head>
   <body>
-    <script src="reload.js" charset="utf-8"></script>
-    
+    <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyD_5jDlzFxFvW5Xclus9gdzhofgZOheC9I",
+        authDomain: "flaggier-7c59d.firebaseapp.com",
+        databaseURL: "https://flaggier-7c59d.firebaseio.com",
+        projectId: "flaggier-7c59d",
+        storageBucket: "flaggier-7c59d.appspot.com",
+        messagingSenderId: "328935526787"
+      };
+      firebase.initializeApp(config);
+    </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="js/reload.js" charset="utf-8"></script>
+    <script src="js/game.js" charset="utf-8"></script>
+    <div id="resetBtn"></div>
+    <div class="game">
+      <div class="base" id="1"></div>
+      <div class="base" id="2"></div>
+      <div class="base" id="3"></div>
+      <div class="base" id="4"></div>
+    </div>
   </body>
 </html>

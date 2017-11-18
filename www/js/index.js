@@ -2,29 +2,40 @@
 
 // function onDeviceReady() {
   var player = undefined;
+  var mode = undefined;
   $(document).ready(function(){
     const dbRef = firebase.database().ref();
+    // console.log(dbRef.child('bases'));
     dbRef.on('value', snap=>{
       let val = snap.val();
-
-      if(val.players.red) $('#red').find('.taken').fadeIn(100);
-      else $('#red').find('.taken').fadeOut(100);
-      if(val.players.blue) $('#blue').find('.taken').fadeIn(100);
-      else $('#blue').find('.taken').fadeOut(100);
-      if(val.players.green) $('#green').find('.taken').fadeIn(100);
-      else $('#green').find('.taken').fadeOut(100);
-      if(val.players.yellow) $('#yellow').find('.taken').fadeIn(100);
-      else $('#yellow').find('.taken').fadeOut(100);
-
-      // console.log(Object.keys(val.players).length);
-      console.log(Object.values(val.players));
-      var playerValues = Object.values(val.players);
-      var presentPlayers = 0;
-      playerValues.forEach(function(isPresent){
-        if(isPresent) presentPlayers++;
-      });
-      if(presentPlayers > 1 && player){
-        $('#startBtn').fadeIn(200);
+      if(mode == undefined) mode = val.mode;
+      if(val.mode == 'start'){
+        if(val.players.red) $('#red').find('.taken').fadeIn(100);
+        else $('#red').find('.taken').fadeOut(100);
+        if(val.players.blue) $('#blue').find('.taken').fadeIn(100);
+        else $('#blue').find('.taken').fadeOut(100);
+        if(val.players.green) $('#green').find('.taken').fadeIn(100);
+        else $('#green').find('.taken').fadeOut(100);
+        if(val.players.yellow) $('#yellow').find('.taken').fadeIn(100);
+        else $('#yellow').find('.taken').fadeOut(100);
+        // console.log(Object.keys(val.players).length);
+        console.log(Object.values(val.players));
+        var playerValues = Object.values(val.players);
+        var presentPlayers = 0;
+        playerValues.forEach(function(isPresent){
+          if(isPresent) presentPlayers++;
+        });
+        if(presentPlayers > 1 && player){
+          $('#startBtn').fadeIn(200);
+        }
+      }
+      else{
+        if(mode == 'start') {
+          mode = 'game';
+          $('#startScreen').fadeOut(300, function(){
+            $('#gameScreen').fadeIn(300, initGame);
+          });
+        }
       }
     });
 
@@ -42,12 +53,23 @@
       dbRef.child('players/blue').set(false);
       dbRef.child('players/green').set(false);
       dbRef.child('players/yellow').set(false);
+      dbRef.child('mode').set('start');
+      dbRef.child('bases/1').set('white');
+      dbRef.child('bases/2').set('white');
+      dbRef.child('bases/3').set('white');
+      dbRef.child('bases/4').set('white');
+      console.log('reseted');
     });
 
     $('#startBtn').click(function(){
-      window.location.href = "game.html";
+      dbRef.child('mode').set('game');
+
     });
   });
+
+  function initGame(){
+    console.log('inited');
+  }
 
   function Player(color){
     this.color = color;
