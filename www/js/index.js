@@ -61,14 +61,21 @@
       $('.title').html('nonon');
     }
 
-    nfc.addTagDiscoveredListener(function() {
-      $('.title').html('yues');
+    nfc.addNdefListener(function(ndef) {
+      var string = nfc.bytesToString(ndef.tag.ndefMessage[0].payload);
+      string = string.substring(3);
+      $('.subtitle').html(string);
+      $('.title').html('YAS');
+    })
+
+    nfc.addTagDiscoveredListener(function(nfcevent) {
+      $('.subtitle').html(JSON.stringify(nfcevent.tag));
+      $('.title').html(nfc.bytesToString(nfcevent.tag.id));
     }, function() {
       $('.subtitle').html('yes');
     }, function() {
       $('.subtitle').html('yes');
     });
-    console.log('jagkldjagioajglj');
   } catch(ex) {
     alert(ex.message);
   }
