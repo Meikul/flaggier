@@ -3,8 +3,14 @@
 // function onDeviceReady() {
   var player = undefined;
   var mode = undefined;
-  $(document).ready(function(){
+
+  document.addEventListener('deviceready', function() {
+    
+
+
+  //$(document).ready(function(){
     const dbRef = firebase.database().ref();
+
     // console.log(dbRef.child('bases'));
     dbRef.on('value', snap=>{
       let val = snap.val();
@@ -47,6 +53,25 @@
       dbRef.child('players/'+color).set(true);
     });
 
+    try {
+    
+    if(nfc == null) {
+      $('.title').html('yes');
+    } else {
+      $('.title').html('nonon');
+    }
+
+    nfc.addTagDiscoveredListener(function() {
+      $('.title').html('yues');
+    }, function() {
+      $('.subtitle').html('yes');
+    }, function() {
+      $('.subtitle').html('yes');
+    });
+    console.log('jagkldjagioajglj');
+  } catch(ex) {
+    alert(ex.message);
+  }
     $('#resetBtn').click(function(){
       player = undefined;
       dbRef.child('players/red').set(false);
@@ -65,7 +90,7 @@
       dbRef.child('mode').set('game');
 
     });
-  });
+  //});
 
   function initGame(){
     console.log('inited');
@@ -74,4 +99,5 @@
   function Player(color){
     this.color = color;
   }
+}, false);
 // }
