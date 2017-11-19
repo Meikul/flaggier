@@ -42,6 +42,10 @@
             $('#gameScreen').fadeIn(300, initGame);
           });
         }
+        $('#b1').css('background', val.bases.b1);
+        $('#b2').css('background', val.bases.b2);
+        $('#b3').css('background', val.bases.b3);
+        $('#b4').css('background', val.bases.b4);
       }
     });
 
@@ -64,8 +68,7 @@
     nfc.addNdefListener(function(ndef) {
       var string = nfc.bytesToString(ndef.tag.ndefMessage[0].payload);
       string = string.substring(3);
-      $('.subtitle').html(string);
-      $('.title').html('YAS');
+      nfcHandle(string);
     })
 
     nfc.addTagDiscoveredListener(function(nfcevent) {
@@ -86,18 +89,21 @@
       dbRef.child('players/green').set(false);
       dbRef.child('players/yellow').set(false);
       dbRef.child('mode').set('start');
-      dbRef.child('bases/1').set('white');
-      dbRef.child('bases/2').set('white');
-      dbRef.child('bases/3').set('white');
-      dbRef.child('bases/4').set('white');
+      dbRef.child('bases/b1').set('white');
+      dbRef.child('bases/b2').set('white');
+      dbRef.child('bases/b3').set('white');
+      dbRef.child('bases/b4').set('white');
       console.log('reseted');
     });
 
     $('#startBtn').click(function(){
       dbRef.child('mode').set('game');
-
     });
   //});
+
+  function nfcHandle(contents){
+    dbRef.child('bases/'+contents).set(player.color);
+  }
 
   function initGame(){
     console.log('inited');

@@ -68,8 +68,7 @@
     nfc.addNdefListener(function(ndef) {
       var string = nfc.bytesToString(ndef.tag.ndefMessage[0].payload);
       string = string.substring(3);
-      $('.subtitle').html(string);
-      $('.title').html('YAS');
+      nfcHandle(string);
     })
 
     nfc.addTagDiscoveredListener(function(nfcevent) {
