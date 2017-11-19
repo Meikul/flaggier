@@ -3,8 +3,14 @@
 // function onDeviceReady() {
   var player = undefined;
   var mode = undefined;
-  $(document).ready(function(){
+
+  document.addEventListener('deviceready', function() {
+    
+
+
+  //$(document).ready(function(){
     const dbRef = firebase.database().ref();
+
     // console.log(dbRef.child('bases'));
     dbRef.on('value', snap=>{
       let val = snap.val();
@@ -47,6 +53,32 @@
       dbRef.child('players/'+color).set(true);
     });
 
+    try {
+    
+    if(nfc == null) {
+      $('.title').html('yes');
+    } else {
+      $('.title').html('nonon');
+    }
+
+    nfc.addNdefListener(function(ndef) {
+      var string = nfc.bytesToString(ndef.tag.ndefMessage[0].payload);
+      string = string.substring(3);
+      $('.subtitle').html(string);
+      $('.title').html('YAS');
+    })
+
+    nfc.addTagDiscoveredListener(function(nfcevent) {
+      $('.subtitle').html(JSON.stringify(nfcevent.tag));
+      $('.title').html(nfc.bytesToString(nfcevent.tag.id));
+    }, function() {
+      $('.subtitle').html('yes');
+    }, function() {
+      $('.subtitle').html('yes');
+    });
+  } catch(ex) {
+    alert(ex.message);
+  }
     $('#resetBtn').click(function(){
       player = undefined;
       dbRef.child('players/red').set(false);
@@ -65,7 +97,7 @@
       dbRef.child('mode').set('game');
 
     });
-  });
+  //});
 
   function initGame(){
     console.log('inited');
@@ -74,4 +106,5 @@
   function Player(color){
     this.color = color;
   }
+}, false);
 // }

@@ -9,6 +9,9 @@
   "installed_plugins": {
     "cordova-plugin-whitelist": {
       "PACKAGE_NAME": "com.flaggy.game"
+    },
+    "phonegap-nfc": {
+      "PACKAGE_NAME": "com.flaggy.game"
     }
   },
   "dependent_plugins": {}
