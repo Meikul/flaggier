@@ -5,7 +5,7 @@
   var mode = undefined;
 
   document.addEventListener('deviceready', function() {
-    
+
 
 
   //$(document).ready(function(){
@@ -36,6 +36,9 @@
         }
       }
       else{
+        if(player == undefined){
+          window.location.href = 'wait.html';
+        }
         if(mode == 'start') {
           mode = 'game';
           $('#startScreen').fadeOut(300, function(){
@@ -58,7 +61,7 @@
     });
 
     try {
-    
+
     if(nfc == null) {
       $('.title').html('yes');
     } else {
